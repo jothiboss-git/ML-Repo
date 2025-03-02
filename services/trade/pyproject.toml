@@ -1,0 +1,15 @@
+[project]
+name = "trade"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "loguru>=0.7.3",
+    "pre-commit>=4.1.0",
+    "pydantic>=2.7.4",
+    "pydantic-settings>=2.7.1",
+    "quixstreams>=2.5.1",
+    "typing>=3.10.0.0",
+    "websocket-client>=1.8.0",
+]

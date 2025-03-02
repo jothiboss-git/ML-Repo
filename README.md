@@ -41,7 +41,7 @@
    Note : python version is should be 3.9.0
    produce the trade data to the Kafka topic
    Note: install the quixstream before pydantic
-    uv add quixstream
+    uv add quixstreams
 
 10. Create moke treade service from kraken API for testing
      https://docs.kraken.com/api/docs/websocket-v2/trade/
@@ -83,3 +83,7 @@
       -add the hooks to the pre-commit-config.yaml file
       to check the pre-commit hooks
       pre-commit run --all-files
+
+16. Create Candle Service
+     uv init candle
+17. Add loguru,quixstreams,pydantic-settings to the candle service
