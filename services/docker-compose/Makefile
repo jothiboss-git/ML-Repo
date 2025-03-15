@@ -30,10 +30,10 @@ backfill-technical-indicator-historical: build-technical-indicator-historical
 stop-technical-indicator-historical:
 	docker-compose -f technical-indicator-historical.yml down
 
-#Clean up the backfill kafka topics
-clean-backfill-kafka-topics:
+#Clean up the backfill kafka topics which contains historical 
+clean-backfill-kafka-topics: start-redpanda
 	@echo "Cleaning up the backfill kafka topics which contains historical data"
-	docker compose -f redpanda.yml exec redpanda rpk topic delete --topic -r ".*historical*"
+	docker compose -f redpanda.yml exec redpanda rpk topic delete -r ".*historical.*"
 	
 
 
