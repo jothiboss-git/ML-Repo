@@ -19,12 +19,16 @@
      go to service foler and excute the command
       uv init trade - it will create the trade folder with the dependencies run.py,project.toml,pyproject.toml
    
+   
 
 5. Create a virtual environment
      uv init trade  - it will create the virtual environment and install the dependencies inside trade folder
 
 5. Install Make file
    https://gnuwin32.sourceforge.net/packages/make.htm
+
+  check with LLM  how to install make ?
+
 
 6. Create a make file in the trade folder which will create vertual environment and install the dependencies
       make run
@@ -85,5 +89,45 @@
       pre-commit run --all-files
 
 16. Create Candle Service
-     uv init candle
+     uv init --no-workspace candle
 17. Add loguru,quixstreams,pydantic-settings to the candle service
+
+18. Create technical-indicator service
+   uv init --no-workspace technical-inidicator
+
+19. Add loguru,quixstreams,pydantic-settings to the candle service
+
+20> install the TA-LIB library for generate the technical indicator
+     https://github.com/TA-Lib/ta-lib-python
+
+     - uv add TA-Lib
+     For 64-bit Windows, the easiest way is to get the executable installer:
+        Download ta-lib-0.6.4-windows-x86_64.msi.fromabove gitgub
+        Run the Installer or run msiexec from the command-line.
+
+       - Prompt for technical indicator
+          i want to compute good technical indicator to predict short term crypto prices in python using that 
+ta-lib libraty. recommmend 10good indicator for this use case , together with their timeperiod and other hyper paarmeeter and show me the python code to compute them
+
+21. Create a feature store
+    uv init --no-workspace feature-store
+
+22. Install hopsworks
+     uv add hopsworks
+     https://github.com/logicalclocks/hopsworks
+
+22. Create partition at redpanda to achieve parallellism
+       that means each bitcoin will be processed by different partition. Example:
+       - bitcoin-1 will be processed by partion-1(candleservice 1)(BTC/USD")
+       - bitcoin-2 will be processed by partition-2(candleservice 2) ("BTC/EUR")
+       - bitcoin-3 will be processed by partition-3 (candleservice 3)("ETH/EUR")
+       - bitcoin-4 will be processed by partition-4(candleservice 4)("ETH/USD")
+    Command added to docker-compose/Makefile file to add partitions to the trade topic
+
+
+       https://docs.redpanda.com/current/reference/rpk/rpk-topic/rpk-topic-add-partitions/
+       
+
+23. Create NEWS Service
+      uv init --no-workspace news
+

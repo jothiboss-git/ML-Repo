@@ -7,8 +7,8 @@ class Settings(BaseSettings):
     kafka_input_topic: str
     kafka_output_topic: str
     kafka_consumer_group: str
+    max_candle_in_state: int
     candle_seconds: int
-    emit_incomplete_candle : bool
     data_source: Literal['live','historical','test']
 
 settings = Settings()

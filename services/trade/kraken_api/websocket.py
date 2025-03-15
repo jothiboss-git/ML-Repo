@@ -4,12 +4,14 @@ from websocket import create_connection
 from .trade import Trade
 from datetime import datetime
 from loguru import logger
+from .base import TradesAPI
 
 
-class KrakenWebsocket:
+class KrakenWebsocket(TradesAPI):
     URL = "wss://ws.kraken.com/v2"
 
     def __init__(self, pairs: List[str]):
+        logger.info(f"Live Data Fetching from KrakenWebsocket with pairs: {pairs}")
         self.pairs = pairs
 
         # Create the websocket connection
@@ -17,6 +19,11 @@ class KrakenWebsocket:
 
         # Send the subscribe message
         self._subscribe()
+
+        
+    def is_done(self) -> bool:
+        return False
+
 
     def get_trades(self) -> List[Trade]:
         """

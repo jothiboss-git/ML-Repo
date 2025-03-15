@@ -1,0 +1,94 @@
+name: technical-indicator-historical-pipeline
+networks:
+  redpanda-network:
+    external: true
+    name: redpanda-quickstart-one-broker_redpanda_network 
+    # its very importend and find it networkmode at docker-compose.yml of redpanda container at inspect tab
+
+services:
+  trade:
+    build:
+      context: ../trade
+      dockerfile: Dockerfile
+    networks:
+      - redpanda-network
+    #env_file:
+      #- ../trade/setting.env
+    environment:
+      
+      - KAFKA_BOOTSTRAP_SERVERS=redpanda-0:9092
+      - KAFKA_TOPIC=trade_historical_${RUN_ID}
+      - KRAKEN_PAIRS=["BTC/USD","BTC/EUR", "ETH/EUR","ETH/USD"]
+      - LAST_NDAYS=30
+      - DATA_SOURCE=historical
+    #restart: always
+    restart: on-failure
+
+  candle:
+    build:
+      context: ../candle
+      dockerfile: Dockerfile
+    networks:
+      - redpanda-network
+    #env_file:
+      #- ../candle/setting.env
+    depends_on:
+      - trade
+    environment:
+      
+      - KAFKA_BOOTSTRAP_SERVERS=redpanda-0:9092
+      - KAFKA_INPUT_TOPIC=trade_historical_${RUN_ID}
+      - KAFKA_OUTPUT_TOPIC=candle_historical_${RUN_ID}
+      - KAFKA_CONSUMER_GROUP=candle_historical_${RUN_ID}
+      - CANDLE_SECONDS=60
+      - EMIT_INCOMPLETE_CANDLE=False
+      - DATA_SOURCE=historical
+
+    restart: on-failure
+
+  technical-indicator:
+    build:
+      context: ../technical-indicator
+      dockerfile: Dockerfile
+    networks:
+      - redpanda-network
+    #env_file:
+      #- ../technical-indicator/setting.env
+    depends_on:
+      - candle
+    environment:
+      
+      - KAFKA_BOOTSTRAP_SERVERS=redpanda-0:9092
+      - KAFKA_INPUT_TOPIC=candle_historical_${RUN_ID}
+      - KAFKA_OUTPUT_TOPIC=technical-indicator_historical_${RUN_ID}
+      - KAFKA_CONSUMER_GROUP=technical_indicator_historical_${RUN_ID}
+      - MAX_CANDLE_IN_STATE=120
+      - CANDLE_SECONDS=60
+      - FEATURE_GROUP_MATEIALIZATION_INTERVAL=15
+      - DATA_SOURCE=historical
+    restart: on-failure
+  
+  feature-store:
+    build:
+      context: ../feature-store
+      dockerfile: Dockerfile
+    networks:
+      - redpanda-network
+    depends_on:
+      - technical-indicator
+    env_file:
+      #- ../feature-store/setting.env
+      - ../feature-store/credentials.env
+    environment:
+      
+      - KAFKA_BOOTSTRAP_SERVERS=redpanda-0:9092
+      - KAFKA_INPUT_TOPIC=technical-indicator_historical_${RUN_ID}
+      - KAFKA_CONSUMER_GROUP=feature_store_consumer_historical_${RUN_ID}
+      - FEATURE_GROUP_NAME=technical_indicator
+      - FEATURE_GROUP_VERSION=2
+      - FEATURE_GROUP_PRIMARY_KEY=["pair","candle_seconds"]
+      - FEATURE_GROUP_EVENT_TIME=timestamp_ms
+      - FEATURE_GROUP_MATEIALIZATION_INTERVAL=15
+      - DATA_SOURCE=historical
+    restart: on-failure
+

@@ -3,6 +3,32 @@
 # Use a Python image with uv pre-installed
 FROM ghcr.io/astral-sh/uv:python3.9-bookworm-slim
 
+# Install system dependencies for TA-Lib
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    git \
+    python3-dev \
+    autoconf \
+    automake \
+    libtool \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install TA-Lib from source and verify installation
+WORKDIR /tmp
+RUN git clone https://github.com/TA-Lib/ta-lib.git && \
+    cd ta-lib && \
+    chmod +x autogen.sh && \
+    ./autogen.sh && \
+    ./configure --prefix=/usr && \
+    make -j$(nproc) && \
+    make install && \
+    cd .. && \
+    rm -rf ta-lib && \
+    ldconfig && \
+    # Verify library installation
+    ls -l /usr/lib/libta* && \
+    ls -l /usr/include/ta-lib/
+
 # Install the project into `/app`
 WORKDIR /app
 

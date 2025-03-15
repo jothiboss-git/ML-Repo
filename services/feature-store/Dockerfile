@@ -1,7 +1,8 @@
-#you can find the Dockerfile at https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile
-
 # Use a Python image with uv pre-installed
 FROM ghcr.io/astral-sh/uv:python3.9-bookworm-slim
+
+# Install gcc and required build dependencies
+RUN apt-get update && apt-get install -y gcc && rm -rf /var/lib/apt/lists/*
 
 # Install the project into `/app`
 WORKDIR /app

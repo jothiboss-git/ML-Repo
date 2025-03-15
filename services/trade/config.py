@@ -1,5 +1,6 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List
+from typing import List,Literal
+from pydantic import Field
 
 
 class Settings(BaseSettings):
@@ -7,6 +8,8 @@ class Settings(BaseSettings):
     kafka_bootstrap_servers: str
     kafka_topic: str
     kraken_pairs: List[str]
+    data_source: Literal['live','historical','test'] = Field(alias="DATA_SOURCE")
+    last_ndays: int
 
 
 settings = Settings()

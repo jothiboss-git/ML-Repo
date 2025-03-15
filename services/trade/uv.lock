@@ -697,6 +697,7 @@ dependencies = [
     { name = "pydantic", version = "2.9.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.13'" },
     { name = "pydantic-settings" },
     { name = "quixstreams" },
+    { name = "requests" },
     { name = "typing" },
     { name = "websocket-client" },
 ]
@@ -708,6 +709,7 @@ requires-dist = [
     { name = "pydantic", specifier = ">=2.7.4" },
     { name = "pydantic-settings", specifier = ">=2.7.1" },
     { name = "quixstreams", specifier = ">=2.5.1" },
+    { name = "requests", specifier = ">=2.31.0" },
     { name = "typing", specifier = ">=3.10.0.0" },
     { name = "websocket-client", specifier = ">=1.8.0" },
 ]
